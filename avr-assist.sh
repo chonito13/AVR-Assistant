@@ -19,12 +19,20 @@ one(){
 	avr-gcc -w -Os -DF_CPU2000000UL -mmcu=atmega8 -c -o $STRIPPEDFILENAME\.o $FILENAME
 	avr-gcc -w -mmcu=atmega8 $STRIPPEDFILENAME\.o -o $STRIPPEDFILENAME
 	avr-objcopy -O ihex -R .eeprom $STRIPPEDFILENAME $STRIPPEDFILENAME\.hex
-	rm $STRIPPEDFILENAME\.o $STRIPPEDFILENAME
+	# rm $STRIPPEDFILENAME\.o $STRIPPEDFILENAME
+        pause
+}
+
+two(){
+    read_file
+	echo "Compiling...."
+	STRIPPEDFILENAME="${FILENAME%.*}";
+	avr-gcc -w -Os -DF_CPU2000000UL -mmcu=atmega8 -c -S -o $STRIPPEDFILENAME\.asm $FILENAME
         pause
 }
 
 #Compile and Upload
-two(){
+three(){
 	read_file
 	echo "Compiling...."
 	STRIPPEDFILENAME="${FILENAME%.*}";
@@ -45,18 +53,20 @@ show_menus() {
 	echo "~~~~ M A I N - M E N U ~~~~"
 	echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 	echo "1. Compile"
-	echo "2. Compile & Upload"
-	echo "3. Exit"
+	echo "2. Compile to Assembly"
+	echo "3. Compile & Upload"
+	echo "4. Exit"
 }
 
 # Menu Options Function
 read_options(){
 	local choice
-	read -p "Enter choice [ 1 - 3] " choice
+	read -p "Enter choice [ 1 - 4 ] " choice
 	case $choice in
 		1) one ;;
 		2) two ;;
-		3) exit 0;;
+		3) three ;;
+		4) exit 0;;
 		*) echo -e "${RED}Error...${STD}" && sleep 2
 	esac
 }
